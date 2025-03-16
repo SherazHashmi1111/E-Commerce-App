@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./index.css";
 import { Button } from "@/components/ui/button";
 import { Route, Routes } from "react-router-dom";
@@ -18,9 +18,18 @@ import ShoppingCheckout from "./pages/shopping-view/checkout";
 import ShoppingAccount from "./pages/shopping-view/account";
 import CheckAuth from "./components/common/check-auth";
 import UnauthPage from "./pages/unauth-page";
+import { useDispatch, useSelector } from "react-redux";
+import { checkAuth } from "./store/authSlice";
 function App() {
-  const isAuthenticated = false;
-  const user = { name: "Sheraz", role: "user" };
+  const { user, isAuthenticated, loading } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(checkAuth());
+  }, [dispatch]);
+  if (loading) {
+    return <p>Loading......</p>;
+  }
   return (
     <div className="flex flex-col bg-white overflow-hidden">
       {/* Common components */}
