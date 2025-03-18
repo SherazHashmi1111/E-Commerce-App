@@ -1,3 +1,5 @@
+import { LayoutDashboard, ShoppingBag, ShoppingCart } from "lucide-react";
+
 export const registerFormControls = [
   {
     name: "userName",
@@ -37,3 +39,102 @@ export const loginFormControls = [
     type: "password",
   },
 ];
+
+export const  adminSidebarMenuItems =  [
+  {
+    id: 'dashboard',
+    label: 'Dashboard',
+    path: '/admin/dashboard',
+    icon: <LayoutDashboard />
+  },
+  {
+    id: 'products',
+    label: 'Products',
+    path: '/admin/products',
+    icon: <ShoppingBag />
+  },
+  {
+    id: 'orders',
+    label: 'Orders',
+    path: '/admin/orders',
+    icon: <ShoppingCart />
+  },
+]
+
+
+export const addProductFormElements = [
+  {
+    label: "Product Name",
+    name: "productName",
+    componentType: "input",
+    type: "text",
+    placeholder: "Enter product name",
+  },
+  {
+    label: "Price",
+    name: "price",
+    componentType: "input",
+    type: "number",
+    placeholder: "Enter price",
+  },
+  {
+    label: "Category",
+    name: "category",
+    componentType: "select",
+    type: "dropdown",
+    placeholder: "Select category",
+    options: [
+      { id: 'men', value: "Men", label: "Men" },
+      { id: "women", value: "Women", label: "Women" },
+      { id: "child", value: "Child", label: "Child" },
+      { id: "accessories", value: "Accessories", label: "Accessories" },
+      { id: "electronics", value: "Electronics", label: "Electronics" },
+    ],
+  },
+  {
+    label: "Brand",
+    name: "brand",
+    componentType: "select",
+    type: "dropdown",
+    placeholder: "Select brand",
+    options: [
+      { id: "nike", value: "Nike", label: "Nike" },
+      { id: "adidas", value: "Adidas", label: "Adidas" },
+      { id: "puma", value: "Puma", label: "Puma" },
+      { id: "apple", value: "Apple", label: "Apple" },
+      { id: "samsung", value: "Samsung", label: "Samsung" },
+      { id: "sony", value: "Sony", label: "Sony" },
+    ],
+  },
+  {
+    label: "Stock",
+    name: "stock",
+    componentType: "input",
+    type: "number",
+    placeholder: "Enter stock quantity",
+  },
+  {
+    label: "Image",
+    name: "image",
+    componentType: "input",
+    type: "file",
+    placeholder: "Upload product image",
+  },
+  {
+    label: "Description",
+    name: "description",
+    componentType: "textarea",
+    type: "text",
+    placeholder: "Enter product description",
+  },
+];
+
+export const initialAddProductState = {
+  productName: "",
+  price: "",
+  description: "",
+  category: "",
+  brand: "",
+  stock: "",
+  image: null,
+};

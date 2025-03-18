@@ -58,7 +58,7 @@ function CommonForm({
             }
           >
             <SelectTrigger className="w-full">
-              <SelectValue placeholder={getItem.placeholder} />
+              <SelectValue placeholder={getItem.label} />
               <SelectContent>
                 {getItem.options && getItem.options.length > 0
                   ? getItem.options.map((optionItem) => (

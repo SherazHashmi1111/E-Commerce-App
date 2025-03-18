@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import "./index.css";
-import { Button } from "@/components/ui/button";
 import { Route, Routes } from "react-router-dom";
 import AuthLayout from "./components/auth/layout";
 import Login from "./pages/auth/Login";
