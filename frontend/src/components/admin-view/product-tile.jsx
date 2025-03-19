@@ -1,4 +1,5 @@
 import React from "react";
+import { useDispatch } from "react-redux";
 import {
   Card,
   CardContent,
@@ -8,19 +9,34 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "../ui/button";
+import { deleteProduct, getAllProducts } from "../../store/admin/products-slice";
+import { toast } from "sonner";
 
 function AdminProductTile({
   product,
   setCurrentEditedId,
   setOpenAddProductDialog,
   setFormData,
-  setImageFile,
 }) {
+  const dispatch = useDispatch();
   const eidtProductHandler = (e) => {
     e.preventDefault();
     setOpenAddProductDialog(true);
     setCurrentEditedId(product._id);
     setFormData(product);
+  };
+
+  const productDeleteHandler = (e) => {
+    e.preventDefault();
+    dispatch(deleteProduct(product._id)).then((data) => {
+      if (data?.payload?.success) {
+        dispatch(getAllProducts());
+        toast.success("Product Deleted successfully");
+      }else{
+        toast.error("Product cant be Deleted !!!");
+
+      }
+    });
   };
 
   return (
@@ -48,7 +64,7 @@ function AdminProductTile({
         </CardContent>
         <CardFooter className="flex justify-between gap-1 items-center">
           <Button onClick={eidtProductHandler}>Edit</Button>
-          <Button>Delete</Button>
+          <Button onClick={productDeleteHandler}>Delete</Button>
         </CardFooter>
       </div>
     </Card>

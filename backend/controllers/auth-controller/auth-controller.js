@@ -83,11 +83,19 @@ exports.loginUser = async (req, res, next) => {
 
 // Logout
 exports.logoutUser = async (req, res) => {
-  res.clearCookie("token").json({
-    success: true,
-    message: "Loged out Successfully",
-  });
+  res
+    .clearCookie("token", {
+      httpOnly: true,   // Must match the way it was set
+      secure: true,     // Set to `false` if testing locally (http)
+      sameSite: "None", // Ensure it's compatible across different domains
+    })
+    .status(200)
+    .json({
+      success: true,
+      message: "Logged out Successfully",
+    });
 };
+
 
 
 // Auth Middleware

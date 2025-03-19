@@ -7,14 +7,15 @@ const API_URL = "http://localhost:5000/api/admin/products";
 export const createProduct = createAsyncThunk(
   "products/create",
   async (formData, { rejectWithValue }) => {
-    
     try {
       const response = await axios.post(`${API_URL}/add`, formData, {
         withCredentials: true,
       });
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.response?.data?.message || "Product creation failed");
+      return rejectWithValue(
+        error.response?.data?.message || "Product creation failed"
+      );
     }
   }
 );
@@ -27,7 +28,9 @@ export const getAllProducts = createAsyncThunk(
       const response = await axios.get(API_URL, { withCredentials: true });
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.response?.data?.message || "Fetching products failed");
+      return rejectWithValue(
+        error.response?.data?.message || "Fetching products failed"
+      );
     }
   }
 );
@@ -42,7 +45,9 @@ export const updateProduct = createAsyncThunk(
       });
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.response?.data?.message || "Updating product failed");
+      return rejectWithValue(
+        error.response?.data?.message || "Updating product failed"
+      );
     }
   }
 );
@@ -57,7 +62,9 @@ export const deleteProduct = createAsyncThunk(
       });
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.response?.data?.message || "Deleting product failed");
+      return rejectWithValue(
+        error.response?.data?.message || "Deleting product failed"
+      );
     }
   }
 );
@@ -82,7 +89,7 @@ const adminProductsSlice = createSlice({
       })
       .addCase(createProduct.fulfilled, (state, action) => {
         state.loading = false;
-        state.products=action.payload.data;
+        state.products = action.payload.data;
       })
       .addCase(createProduct.rejected, (state, action) => {
         state.loading = false;
@@ -102,6 +109,27 @@ const adminProductsSlice = createSlice({
         state.error = action.payload;
       })
 
+      // 📌 Handle Update Product
+      .addCase(updateProduct.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(updateProduct.fulfilled, (state) => {
+        state.loading = false;
+      })
+      .addCase(updateProduct.rejected, (state) => {
+        state.loading = false;
+      })
+
+      // 📌 Handle Delete Product
+      .addCase(deleteProduct.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(deleteProduct.fulfilled, (state) => {
+        state.loading = false;
+      })
+      .addCase(deleteProduct.rejected, (state) => {
+        state.loading = false;
+      });
   },
 });
 
