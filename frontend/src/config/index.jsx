@@ -71,8 +71,22 @@ export const addProductFormElements = [
     placeholder: "Enter product name",
   },
   {
+    label: "Description",
+    name: "description",
+    componentType: "textarea",
+    type: "text",
+    placeholder: "Enter product description",
+  },
+  {
     label: "Price",
     name: "price",
+    componentType: "input",
+    type: "number",
+    placeholder: "Enter price",
+  },
+  {
+    label: "Sale Price",
+    name: "salePrice",
     componentType: "input",
     type: "number",
     placeholder: "Enter price",
@@ -112,20 +126,6 @@ export const addProductFormElements = [
     componentType: "input",
     type: "number",
     placeholder: "Enter stock quantity",
-  },
-  {
-    label: "Image",
-    name: "image",
-    componentType: "input",
-    type: "file",
-    placeholder: "Upload product image",
-  },
-  {
-    label: "Description",
-    name: "description",
-    componentType: "textarea",
-    type: "text",
-    placeholder: "Enter product description",
   },
 ];
 

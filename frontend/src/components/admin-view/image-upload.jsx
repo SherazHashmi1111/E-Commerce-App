@@ -4,12 +4,16 @@ import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { FileIcon, UploadCloudIcon, XIcon } from "lucide-react";
 import { Button } from "../ui/button";
+import { Skeleton } from '../ui/skeleton'
 
 function ProductImageUpload({
   imageFile,
   setImageFile,
   setUploadedImageUrl,
   setImageLoadingState,
+  imageLoadingState,
+  uploadedImageUrl,
+  isEditMode
 }) {
   const inputImageRef = useRef(null);
   const handleImageFileChange = (event) => {
@@ -31,7 +35,6 @@ function ProductImageUpload({
       "http://localhost:5000/api/admin/products/upload-image",
       data
     );
-    console.log(response);
 
     if (response) {
       setUploadedImageUrl(response.data.result.url);
@@ -59,7 +62,7 @@ function ProductImageUpload({
       <div
         onDragOver={handleDragOver}
         onDrop={handleDrop}
-        className="border-2 border-dashed p-4 rounded-lg"
+        className={`${isEditMode ? 'opacity-50' : ''} border-2 border-dashed p-4 rounded-lg`}
         onClick={() => inputImageRef.current?.click()}
       >
         <Input
@@ -68,21 +71,23 @@ function ProductImageUpload({
           className="hidden"
           ref={inputImageRef}
           onChange={handleImageFileChange}
+          disabled={isEditMode}
         />
         {!imageFile ? (
           <Label
             htmlFor="image-uploaded"
-            className="flex flex-col items-center justify-center h-32 cursor-pointer"
+            className={`${isEditMode ? 'cursor-not-allowed' : ''} flex flex-col items-center justify-center h-32 cursor-pointer`}
           >
             <UploadCloudIcon className="w-10 h-10 text-muted-foreground mb-2" />
             <span className="">Drag & drop or click to upload image</span>
           </Label>
         ) : (
+          imageLoadingState ? <Skeleton className='h-10 bg-gray-100'/> :
           <div className="flex items-center justify-between">
             <div className="flex items-center ">
-              <FileIcon className="w-8 h-8 text-primary mr-2" />
+              <img src={uploadedImageUrl ? uploadedImageUrl : null} alt="img" className="w-20"/>
             </div>
-            <p className="text-sm font-medium">{imageFile.name}</p>
+            <p className="text-sm font-medium ml-2">{imageFile.name.slice(0, 20)}</p>
             <Button
               variant="ghost"
               size="icon"

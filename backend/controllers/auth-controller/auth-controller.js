@@ -60,7 +60,7 @@ exports.loginUser = async (req, res, next) => {
         email: checkUser.email,
       },
       "CLIENT_SECRET_KEY",
-      { expiresIn: "60m" }
+      { expiresIn: "600m" }
     );
 
     res.cookie("token", token, { httpOnly: true, secure: false }).json({
