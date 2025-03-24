@@ -12,13 +12,13 @@ import { Button } from "../ui/button";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 
-function ShoppingProductTile({ product }) {
+function ShoppingProductTile({ product, handleProductDetail }) {
   
   
 
   return (
     <Card className="w-full max-w-sm mx-auto pt-0 pb-2">
-      <div className="">
+      <div className="" onClick={() => handleProductDetail(product?._id)}>
         <div className="relative mb-3">
           <img
             src={product.image}
@@ -44,19 +44,15 @@ function ShoppingProductTile({ product }) {
               {product?.brand}
             </span>
           </div>
-          <div className="flex justify-between flex-col mb-2 ">
-            {product.salePrice > 0 ? (
-              <span
-                className={`${
-                  product?.salePrice > 0 ? "line-through" : ""
-                } text-sm font-semibold text-muted-foreground`}
-              >
-                $ {product?.price}
-              </span>
-            ) : null}
-            <span className="text-lg text-primary">
-              $ {product?.salePrice}
+          <div className="flex justify-between mb-2 ">
+            <span
+              className={`text-lg font-semibold text-primary ${
+                product?.salePrice > 0 ? "line-through" : ""
+              }`}
+            >
+              $ {product.price}
             </span>
+            {product.salePrice > 0 && <span className="text-lg font-bold">$ {product.salePrice}</span>}
           </div>
         </CardContent>
         <CardFooter className="w-full">

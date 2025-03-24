@@ -17,6 +17,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { getAllFilteredProducts } from "../../store/shop/product-slice";
 import ShoppingProductTile from "../../components/shopping-view/product-tile";
 import { useSearchParams } from "react-router-dom";
+import { getProductDetails } from "../../store/shop/product-slice/index";
+import ProductDetailsDialog from "../../components/shopping-view/product-details";
 
 // Function to convert filter parameters into a query string for URL
 function createSearchParamsHelper(filterParams) {
@@ -33,11 +35,14 @@ function createSearchParamsHelper(filterParams) {
 function ShoppingListing() {
   const dispatch = useDispatch();
   // Fetching product data and loading state from Redux store
-  const { products, loading } = useSelector((state) => state.shopProducts);
+  const { products, loading, productDetails } = useSelector(
+    (state) => state.shopProducts
+  );
 
   // State for managing applied filters and sorting option
   const [filters, setFilters] = useState({});
   const [sort, setSort] = useState(null);
+  const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
 
   // Managing search parameters for URL state
   const [searchParams, setSearchParams] = useSearchParams();
@@ -73,7 +78,15 @@ function ShoppingListing() {
     // Store filters in sessionStorage to maintain state across refreshes
     sessionStorage.setItem("filters", JSON.stringify(cpyFilters));
   }
+  // Product details handling
+  const handleProductDetail = (getCurrentProductId) => {
+    dispatch(getProductDetails(getCurrentProductId));
+  };
 
+  // Effect to update URL search parameters when filters change
+  useEffect(() => {
+    if (productDetails !== null) setOpenDetailsDialog(true);
+  }, [productDetails]);
   // Effect to update URL search parameters when filters change
   useEffect(() => {
     if (filters && Object.keys(filters).length > 0) {
@@ -144,9 +157,18 @@ function ShoppingListing() {
         {/* Grid layout for displaying product tiles */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-2">
           {products.data.map((item) => (
-            <ShoppingProductTile product={item} key={item._id} />
+            <ShoppingProductTile
+              product={item}
+              key={item._id}
+              handleProductDetail={handleProductDetail}
+            />
           ))}
         </div>
+        <ProductDetailsDialog
+          open={openDetailsDialog}
+          setOpen={setOpenDetailsDialog}
+          productDetails={productDetails}
+        />
       </div>
     </div>
   );

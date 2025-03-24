@@ -26,11 +26,30 @@ export const getAllFilteredProducts = createAsyncThunk(
   }
 );
 
+// Get single Product detail
+export const getProductDetails = createAsyncThunk(
+  "product/getProductDetails",
+  async (id, { rejectWithValue }) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:5000/api/shop/products/get/${id}`,
+        { withCredentials: true }
+      );
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Fetching product details failed"
+      );
+    }
+  }
+);
+
 // ✅ Initial State
 const initialState = {
   products: [],
   loading: false,
   error: null,
+  productDetails: null
 };
 
 // ✅ Create Redux Slice
@@ -52,6 +71,19 @@ const shopProductsSlice = createSlice({
       .addCase(getAllFilteredProducts.rejected, (state) => {
         state.loading = false;
         state.products = [];
+      })
+      // 📌 Handle Get Product Details
+      .addCase(getProductDetails.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getProductDetails.fulfilled, (state, action) => {
+        state.loading = false;
+        state.productDetails = action.payload.data;
+        
+      })
+      .addCase(getProductDetails.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
       });
   },
 });

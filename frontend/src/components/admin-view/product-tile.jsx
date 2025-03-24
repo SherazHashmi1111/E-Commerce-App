@@ -51,7 +51,7 @@ function AdminProductTile({
         </div>
         <CardContent>
           <h2 className="text-xl font-bold mb-2">{product.productName}</h2>
-          <div className="flex justify-between mb-2 flex-col">
+          <div className="flex justify-between mb-2 ">
             <span
               className={`text-lg font-semibold text-primary ${
                 product?.salePrice > 0 ? "line-through" : ""
@@ -59,7 +59,7 @@ function AdminProductTile({
             >
               $ {product.price}
             </span>
-            <span className="text-lg font-bold">$ {product.salePrice}</span>
+            {product.salePrice > 0 && <span className="text-lg font-bold">$ {product.salePrice}</span>}
           </div>
         </CardContent>
         <CardFooter className="flex justify-between gap-1 items-center">
