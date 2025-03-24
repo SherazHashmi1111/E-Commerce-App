@@ -40,6 +40,7 @@ exports.loginUser = async (req, res, next) => {
 
   try {
     const checkUser = await User.findOne({ email });
+    
     if (!checkUser) {
       return res.json({
         success: false,
@@ -58,6 +59,7 @@ exports.loginUser = async (req, res, next) => {
         id: checkUser._id,
         role: checkUser.role,
         email: checkUser.email,
+        userName: checkUser.userName
       },
       "CLIENT_SECRET_KEY",
       { expiresIn: "600m" }
@@ -70,6 +72,7 @@ exports.loginUser = async (req, res, next) => {
         email: checkUser.email,
         role: checkUser.role,
         id: checkUser._id,
+        userName: checkUser.userName
       },
     });
   } catch (error) {

@@ -40,27 +40,26 @@ export const loginFormControls = [
   },
 ];
 
-export const  adminSidebarMenuItems =  [
+export const adminSidebarMenuItems = [
   {
-    id: 'dashboard',
-    label: 'Dashboard',
-    path: '/admin/dashboard',
-    icon: <LayoutDashboard />
+    id: "dashboard",
+    label: "Dashboard",
+    path: "/admin/dashboard",
+    icon: <LayoutDashboard />,
   },
   {
-    id: 'products',
-    label: 'Products',
-    path: '/admin/products',
-    icon: <ShoppingBag />
+    id: "products",
+    label: "Products",
+    path: "/admin/products",
+    icon: <ShoppingBag />,
   },
   {
-    id: 'orders',
-    label: 'Orders',
-    path: '/admin/orders',
-    icon: <ShoppingCart />
+    id: "orders",
+    label: "Orders",
+    path: "/admin/orders",
+    icon: <ShoppingCart />,
   },
-]
-
+];
 
 export const addProductFormElements = [
   {
@@ -98,9 +97,9 @@ export const addProductFormElements = [
     type: "dropdown",
     placeholder: "Select category",
     options: [
-      { id: 'men', value: "Men", label: "Men" },
+      { id: "men", value: "Men", label: "Men" },
       { id: "women", value: "Women", label: "Women" },
-      { id: "child", value: "Child", label: "Child" },
+      { id: "kids", value: "Kids", label: "Kids" },
       { id: "accessories", value: "Accessories", label: "Accessories" },
       { id: "electronics", value: "Electronics", label: "Electronics" },
     ],
@@ -138,3 +137,62 @@ export const initialAddProductState = {
   stock: "",
   image: null,
 };
+
+export const shoppingViewHeaderMenuItems = [
+  {
+    id: "home",
+    label: "Home",
+    path: "/shop/home",
+  },
+  {
+    id: "men",
+    label: "Men",
+    path: "/shop/listing",
+  },
+  {
+    id: "women",
+    label: "Women",
+    path: "/shop/listing",
+  },
+  {
+    id: "kids",
+    label: "Kids",
+    path: "/shop/listing",
+  },
+  {
+    id: "accessories",
+    label: "Accessories",
+    path: "/shop/listing",
+  },
+  {
+    id: "electronics",
+    label: "Electronics",
+    path: "/shop/listing",
+  },
+];
+
+export const filterOptions = {
+  category: [
+    { id: "men", label: "Men" },
+    { id: "women", label: "Women" },
+    { id: "kids", label: "Kids" },
+    { id: "accessories", label: "Accessories" },
+    { id: "electronics", label: "Electronics" },
+  ],
+  brand: [
+    { id: "nike", label: "Nike" },
+    { id: "adidas", label: "Adidas" },
+    { id: "puma", label: "Puma" },
+    { id: "apple", label: "Apple" },
+    { id: "samsung", label: "Samsung" },
+    { id: "sony", label: "Sony" },
+  ],
+};
+
+
+export const sortOptions = [
+  { id: 'price-lowtohigh', label: 'Price: Low to High' },
+  { id: 'price-hightolow', label: 'Price: High to Low' },
+  { id: 'a-to-z', label: 'A to Z' },
+  { id: 'z-to-a', label: 'Z to A' }
+];
