@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import {
   House,
@@ -29,6 +29,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { shoppingViewHeaderMenuItems } from "../../config";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { logoutUser } from "../../store/authSlice";
+import CartWrapper from "./cart-wraper";
 
 // Menu items
 const MenuItems = () => {
@@ -45,18 +46,29 @@ const MenuItems = () => {
 
 const HeaderRightContent = () => {
   const { user } = useSelector((state) => state.auth);
+  const { cartItems } = useSelector((state) => state.shopCart);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [openCartSheet, setOpenCartSheet] = useState(false);
   const logoutHandler = (e) => {
     e.preventDefault();
     dispatch(logoutUser());
   };
+  
   return (
     <div className="flex lg:items-center lg:flex-row flex-col gap-4 ">
-      <Button variant={"outline"} size={"icon"} className="cursor-pointer">
-        <ShoppingCart className="w-6 h-6" />
-        <span className="sr-only">User Cart</span>
-      </Button>
+      <Sheet open={openCartSheet} onOpenChange={() => setOpenCartSheet(false)}>
+        <Button
+          onClick={() => setOpenCartSheet(true)}
+          variant={"outline"}
+          size={"icon"}
+          className="cursor-pointer"
+        >
+          <ShoppingCart className="w-6 h-6" />
+          <span className="sr-only">User Cart</span>
+        </Button>
+        <CartWrapper cartItems={cartItems} />
+      </Sheet>
       <DropdownMenu>
         <DropdownMenuTrigger asChild className="cursor-pointer">
           <Avatar className="bg-black">
@@ -88,7 +100,6 @@ const HeaderRightContent = () => {
 };
 
 function ShoppingHeader() {
-  const { isAuthenticated } = useSelector((state) => state.auth);
 
   return (
     <header className="sticky top-0 z-40 w-full  border-b bg-background ">
@@ -114,15 +125,15 @@ function ShoppingHeader() {
           </SheetTrigger>
           <SheetContent side="left" className="w-full max-w-xs pl-6 pt-10">
             <MenuItems />
-            <HeaderRightContent/>
+            <HeaderRightContent />
           </SheetContent>
         </Sheet>
         <div className="hidden lg:block ">
           <MenuItems />
         </div>
-          <div className="hidden lg:block">
-            <HeaderRightContent />
-          </div>
+        <div className="hidden lg:block">
+          <HeaderRightContent />
+        </div>
       </div>
     </header>
   );

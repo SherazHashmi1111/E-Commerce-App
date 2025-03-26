@@ -1,5 +1,4 @@
-import React, { useEffect } from "react";
-import { useDispatch } from "react-redux";
+import React from "react";
 import {
   Card,
   CardContent,
@@ -9,10 +8,9 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "../ui/button";
-import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 
-function ShoppingProductTile({ product, handleProductDetail }) {
+function ShoppingProductTile({ product, handleProductDetail, handleAddToCart }) {
   
   
 
@@ -55,10 +53,10 @@ function ShoppingProductTile({ product, handleProductDetail }) {
             {product.salePrice > 0 && <span className="text-lg font-bold">$ {product.salePrice}</span>}
           </div>
         </CardContent>
-        <CardFooter className="w-full">
-          <Button className="cursor-pointer w-full" variant='outline'>Add to Cart</Button>
-        </CardFooter>
       </div>
+        <CardFooter className="w-full">
+          <Button onClick={() => handleAddToCart(product?._id)} className="cursor-pointer w-full" variant='outline'>Add to Cart</Button>
+        </CardFooter>
     </Card>
   );
 }

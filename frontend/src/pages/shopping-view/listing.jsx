@@ -19,6 +19,7 @@ import ShoppingProductTile from "../../components/shopping-view/product-tile";
 import { useSearchParams } from "react-router-dom";
 import { getProductDetails } from "../../store/shop/product-slice/index";
 import ProductDetailsDialog from "../../components/shopping-view/product-details";
+import { addToCart, fetchCartItems } from "../../store/shop/cart-slice";
 
 // Function to convert filter parameters into a query string for URL
 function createSearchParamsHelper(filterParams) {
@@ -35,9 +36,10 @@ function createSearchParamsHelper(filterParams) {
 function ShoppingListing() {
   const dispatch = useDispatch();
   // Fetching product data and loading state from Redux store
-  const { products, loading, productDetails } = useSelector(
+  const { products, productDetails } = useSelector(
     (state) => state.shopProducts
   );
+  const { user } = useSelector((state) => state.auth);
 
   // State for managing applied filters and sorting option
   const [filters, setFilters] = useState({});
@@ -81,6 +83,21 @@ function ShoppingListing() {
   // Product details handling
   const handleProductDetail = (getCurrentProductId) => {
     dispatch(getProductDetails(getCurrentProductId));
+  };
+
+  //
+  const handleAddToCart = (getCurrentProductId) => {
+    dispatch(
+      addToCart({
+        userId: user?.id,
+        productId: getCurrentProductId,
+        quantity: 1,
+      })
+    ).then((data) => {
+      if (data?.payload?.success) {
+        dispatch(fetchCartItems(user?.id));
+      }
+    });
   };
 
   // Effect to update URL search parameters when filters change
@@ -161,6 +178,7 @@ function ShoppingListing() {
               product={item}
               key={item._id}
               handleProductDetail={handleProductDetail}
+              handleAddToCart={handleAddToCart}
             />
           ))}
         </div>

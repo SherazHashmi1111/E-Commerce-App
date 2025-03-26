@@ -14,11 +14,10 @@ import {
 import { Button } from "../ui/button";
 
 function ProductDetailsDialog({ open, setOpen, productDetails }) {
-    
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-        <DialogDescription/>
-        <DialogTitle/>
+      <DialogDescription />
+      <DialogTitle />
       <DialogContent className="grid grid-cols-2 gap-8 sm:p-12 max-w-[90vw] sm:max-w-[80vw] lg:max-w-[70vw]">
         <div className="relative overflow-hidden rounded-lg">
           <img
@@ -30,11 +29,15 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
           />
         </div>
         <div className="grid gap-6">
-            <div className="">
-                <h1 className="text-3xl font-extrabold">{productDetails?.productName}</h1>
-                <p className="text-muted-foreground">{productDetails?.description}</p>
-            </div>
-        <Button className="mt-auto">Order Now</Button>
+          <div className="">
+            <h1 className="text-3xl font-extrabold">
+              {productDetails?.productName}
+            </h1>
+            <p className="text-muted-foreground">
+              {productDetails?.description}
+            </p>
+          </div>
+          <Button className="mt-auto">Order Now</Button>
         </div>
       </DialogContent>
     </Dialog>
