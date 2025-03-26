@@ -15,7 +15,7 @@ function CartWrapper({ cartItems }) {
   
   
   return (
-    <SheetContent className="sm:mx-w-md">
+    <SheetContent className="sm:mx-w-md overflow-scroll">
       <SheetHeader>
         <SheetTitle>Your Cart</SheetTitle>
         <SheetDescription></SheetDescription>

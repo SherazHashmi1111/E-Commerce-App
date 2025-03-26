@@ -85,7 +85,7 @@ exports.fetchCartItem = async (req, res) => {
       productName: item.productId.productName,
       price: item.productId.price,
       salePrice: item.productId.salePrice,
-      quantity: item.productId.quantity,
+      quantity: item.quantity,
     }));
 
     res.status(200).json({
@@ -180,7 +180,7 @@ exports.deleteCartItem = async (req, res) => {
       select: "item productName price salePrice",
     });
     if (!cart) {
-      res.status(404).json({
+     return res.status(404).json({
         success: false,
         message: "Cart not found", // Fixed typo
       });
@@ -192,7 +192,7 @@ exports.deleteCartItem = async (req, res) => {
 
     await cart.save();
 
-    await Cart.populate({
+    await cart.populate({
       path: "items.productId",
       select: "item productName price salePrice",
     });
@@ -203,7 +203,7 @@ exports.deleteCartItem = async (req, res) => {
       productName: item.productId ? item.productId.productName : null,
       price: item.productId ? item.productId.price : null,
       salePrice: item.productId ? item.productId.salePrice : null,
-      quantity: item.productId.quantity,
+      quantity: item.quantity,
     }));
 
     res.status(200).json({

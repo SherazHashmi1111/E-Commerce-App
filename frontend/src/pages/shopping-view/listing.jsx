@@ -1,149 +1,121 @@
 import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useSearchParams } from "react-router-dom";
+import { ArrowUpDownIcon } from "lucide-react";
 import ProductFilter from "../../components/shopping-view/filter";
+import ShoppingProductTile from "../../components/shopping-view/product-tile";
+import ProductDetailsDialog from "../../components/shopping-view/product-details";
+import { Button } from "../../components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
 } from "@/components/ui/dropdown-menu";
-import { Button } from "../../components/ui/button";
-import { ArrowUpDownIcon } from "lucide-react";
 import { sortOptions } from "../../config";
-import { useDispatch, useSelector } from "react-redux";
-import { getAllFilteredProducts } from "../../store/shop/product-slice";
-import ShoppingProductTile from "../../components/shopping-view/product-tile";
-import { useSearchParams } from "react-router-dom";
-import { getProductDetails } from "../../store/shop/product-slice/index";
-import ProductDetailsDialog from "../../components/shopping-view/product-details";
+import {
+  getAllFilteredProducts,
+  getProductDetails,
+} from "../../store/shop/product-slice";
+import { toast } from "sonner";
 import { addToCart, fetchCartItems } from "../../store/shop/cart-slice";
 
-// Function to convert filter parameters into a query string for URL
+// Helper function to create URL search parameters
 function createSearchParamsHelper(filterParams) {
-  const queryParams = [];
-  for (const [key, value] of Object.entries(filterParams)) {
-    if (Array.isArray(value) && value.length > 0) {
-      const paramValue = value.join(",");
-      queryParams.push(`${key}=${encodeURIComponent(paramValue)}`);
-    }
-  }
-  return queryParams.join("&");
+  return Object.entries(filterParams)
+    .filter(([_, value]) => Array.isArray(value) && value.length > 0)
+    .map(([key, value]) => `${key}=${encodeURIComponent(value.join(","))}`)
+    .join("&");
 }
 
 function ShoppingListing() {
   const dispatch = useDispatch();
-  // Fetching product data and loading state from Redux store
   const { products, productDetails } = useSelector(
     (state) => state.shopProducts
   );
   const { user } = useSelector((state) => state.auth);
 
-  // State for managing applied filters and sorting option
   const [filters, setFilters] = useState({});
   const [sort, setSort] = useState(null);
   const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
-
-  // Managing search parameters for URL state
   const [searchParams, setSearchParams] = useSearchParams();
 
-  // Function to handle sorting change
-  function handleSort(value) {
-    setSort(value);
-  }
+  // Sorting handler
+  const handleSort = (value) => setSort(value);
 
-  // Function to handle filtering logic
-  function handleFilter(getSectionId, getCurrentOption) {
-    let cpyFilters = { ...filters };
-    const indexOfCurrentSection = Object.keys(cpyFilters).indexOf(getSectionId);
-
-    // If filter category doesn't exist, create a new one
-    if (indexOfCurrentSection === -1) {
-      cpyFilters = {
-        ...cpyFilters,
-        [getSectionId]: [getCurrentOption],
-      };
-    } else {
-      // Toggle selection of a filter option
-      const indexOfCurrentOption =
-        cpyFilters[getSectionId].indexOf(getCurrentOption);
-      if (indexOfCurrentOption === -1) {
-        cpyFilters[getSectionId].push(getCurrentOption);
+  // Filtering handler
+  function handleFilter(sectionId, option) {
+    setFilters((prevFilters) => {
+      const updatedFilters = { ...prevFilters };
+      if (!updatedFilters[sectionId]) {
+        updatedFilters[sectionId] = [option];
       } else {
-        cpyFilters[getSectionId].splice(indexOfCurrentOption, 1);
+        const index = updatedFilters[sectionId].indexOf(option);
+        index === -1
+          ? updatedFilters[sectionId].push(option)
+          : updatedFilters[sectionId].splice(index, 1);
       }
-    }
-
-    setFilters(cpyFilters);
-    // Store filters in sessionStorage to maintain state across refreshes
-    sessionStorage.setItem("filters", JSON.stringify(cpyFilters));
-  }
-  // Product details handling
-  const handleProductDetail = (getCurrentProductId) => {
-    dispatch(getProductDetails(getCurrentProductId));
-  };
-
-  //
-  const handleAddToCart = (getCurrentProductId) => {
-    dispatch(
-      addToCart({
-        userId: user?.id,
-        productId: getCurrentProductId,
-        quantity: 1,
-      })
-    ).then((data) => {
-      if (data?.payload?.success) {
-        dispatch(fetchCartItems(user?.id));
-      }
+      sessionStorage.setItem("filters", JSON.stringify(updatedFilters));
+      return updatedFilters;
     });
+  }
+
+  // Product details handler
+  const handleProductDetail = (productId) =>
+    dispatch(getProductDetails(productId));
+
+  // Add to cart handler
+  const handleAddToCart = (productId) => {
+    dispatch(addToCart({ userId: user?.id, productId, quantity: 1 })).then(
+      (data) => {
+        if (data?.payload?.success) {
+          dispatch(fetchCartItems(user?.id));
+          toast("Item added to cart successfully");
+        }
+      }
+    );
   };
 
-  // Effect to update URL search parameters when filters change
+  // Effect to open details dialog when product details are loaded
   useEffect(() => {
-    if (productDetails !== null) setOpenDetailsDialog(true);
+    if (productDetails) setOpenDetailsDialog(true);
   }, [productDetails]);
+
   // Effect to update URL search parameters when filters change
   useEffect(() => {
-    if (filters && Object.keys(filters).length > 0) {
-      const createQueryString = createSearchParamsHelper(filters);
-      setSearchParams(new URLSearchParams(createQueryString));
+    if (Object.keys(filters).length > 0) {
+      setSearchParams(new URLSearchParams(createSearchParamsHelper(filters)));
     }
-  }, [filters]);
+  }, [filters, setSearchParams]);
 
-  // Effect to initialize sorting and filters from session storage on component mount
+  // Effect to initialize filters and sorting from session storage
   useEffect(() => {
     setSort("price-lowtohigh");
     setFilters(JSON.parse(sessionStorage.getItem("filters")) || {});
   }, []);
 
-  // Fetch products when the component mounts or dispatch changes
+  // Fetch products on filters/sort change
   useEffect(() => {
-    if (filters !== null && sort !== null)
+    if (filters && sort) {
       dispatch(
         getAllFilteredProducts({ filterParams: filters, sortParams: sort })
       );
+    }
   }, [dispatch, filters, sort]);
 
-  // Prevent rendering if product data is not available
-  if (products.data === undefined) return;
+  if (!products?.data) return null;
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-[300px_1fr] gap-6 p-4 md:p-6">
-      {/* Product filter sidebar */}
       <ProductFilter filters={filters} handleFilter={handleFilter} />
-
       <div className="bg-background w-full rounded-lg shadow-sm">
-        {/* Header section with title and sorting dropdown */}
         <div className="p-4 border-b flex items-center justify-between">
           <h2 className="text-lg font-semibold">All Products</h2>
           <div className="flex items-center gap-5">
             <span className="text-muted-foreground">
               {products.data.length} Products
             </span>
-
-            {/* Dropdown for sorting options */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
@@ -157,12 +129,9 @@ function ShoppingListing() {
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-[200px]">
                 <DropdownMenuRadioGroup value={sort} onValueChange={handleSort}>
-                  {sortOptions.map((sortItem) => (
-                    <DropdownMenuRadioItem
-                      value={sortItem.id}
-                      key={sortItem.id}
-                    >
-                      {sortItem.label}
+                  {sortOptions.map(({ id, label }) => (
+                    <DropdownMenuRadioItem key={id} value={id}>
+                      {label}
                     </DropdownMenuRadioItem>
                   ))}
                 </DropdownMenuRadioGroup>
@@ -170,13 +139,11 @@ function ShoppingListing() {
             </DropdownMenu>
           </div>
         </div>
-
-        {/* Grid layout for displaying product tiles */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-2">
           {products.data.map((item) => (
             <ShoppingProductTile
-              product={item}
               key={item._id}
+              product={item}
               handleProductDetail={handleProductDetail}
               handleAddToCart={handleAddToCart}
             />
